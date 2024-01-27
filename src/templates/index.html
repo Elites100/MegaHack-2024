@@ -1,25 +1,23 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Recipe Creation{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <h1 style="color: gold;">Recipe Creation</h1>
-    <p> This form is ask for the Recipes for further recreation </p>
+    <h1 style="color: gold;">Welcome to Recipe Creation</h1>
+    <p style="max-width: 700px; font-size: 16px; line-height: 1.5;">
+        Ready to share your favorite recipes or discover new ones?
+        This is the place to create and explore delicious recipes from around the world.
+    </p>
+    <p style="max-width: 700px; font-size: 16px; line-height: 1.5;">
+        Get started by submitting your own recipes or browse through a variety of dishes shared by our community.
+    </p>
 </div>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="alert alert-success">
-      <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
-{% endwith %}
+<!-- Display the uploaded photo -->
+{% if uploaded_photo %}
+    <img src="{{ url_for('static', filename='uploads/' + uploaded_photo) }}" alt="Uploaded Photo" style="max-width: 100%;">
+{% endif %}
 
-{{ wtf.quick_form(form) }}
+
 {% endblock %}

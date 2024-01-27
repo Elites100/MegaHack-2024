@@ -6,6 +6,13 @@
 {{ super() }}
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+<style>
+    body {
+        background-color: #333; /* Set the background color to black */
+        color: whitesmoke;
+    }
+</style>
 {% endblock %}
 
 {% block navbar %}

@@ -4,13 +4,15 @@ from flask_moment import Moment
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, validators, TextAreaField
 from wtforms.validators import DataRequired,  ValidationError
-
+from flask_wtf.file import FileField, FileAllowed
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
 
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+
 
 def validate_option(form, field):
     if field.data == 'choose':
@@ -39,6 +41,9 @@ class RecipeForm(FlaskForm):
     prep_time = StringField('Preparation Time (e.g., 30 minutes)', validators=[DataRequired()])
     cook_time = StringField('Cooking Time (e.g., 1 hour)', validators=[DataRequired()])
     servings = StringField('Number of Servings', validators=[DataRequired()])
+    photo = FileField('Upload Food Photo', validators=[
+        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')  # Allow only specific image file types
+    ])
     submit = SubmitField('Submit Recipe')
     
 
@@ -53,28 +58,29 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 # Main webpage which is the form
-@app.route('/', methods=['GET', 'POST'])
-def index():
-  name = None
-  form = RecipeForm()
-  if form.validate_on_submit():
-    # Here, you can process the form data, save it to a database, etc.
-    flash('Recipe submitted successfully!', 'success')
-    # Clear the form data after submission
-    form.recipe_name.data = ''
-    form.ingredients.data = ''
-    form.instructions.data = ''
-    form.prep_time.data = ''
-    form.cook_time.data = ''
-    form.servings.data = ''
-  return render_template('index.html', form=form, name=name)
-
-# Infomation page about the form
-@app.route('/about', methods=['GET'])
+@app.route('/about', methods=['GET', 'POST'])
 def about():
-    return render_template('about.html')
+    name = None
+    form = RecipeForm()
+    if form.validate_on_submit():
+        # Here, you can process the form data, save it to a database, etc.
+        flash('Recipe submitted successfully!', 'success')
+        # Clear the form data after submission
+        form.recipe_name.data = ''
+        form.ingredients.data = ''
+        form.instructions.data = ''
+        form.prep_time.data = ''
+        form.cook_time.data = ''
+        form.servings.data = ''
+        form.photo.data = None
+    return render_template('survey.html', form=form, name=name)
+
+# Information page about the form
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 
 # Used to run the application
 if __name__ == '__main__':
-    app.run(debug=True)
+  app.run(debug=True)
